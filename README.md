@@ -3,21 +3,10 @@ New su binary. Made to replace su.
 Requires Linux Kernel 5.9 or above.
 Requires libcap to install.
 
-## Building:
-To build you will need to install libcap and libcap-dev:
+## Installation:
+Run:
 ```
-sudo apt install libcap2 libcap2-bin libcap-dev libpam0g-dev -y
-```
-To build just run:
-```
-sudo gcc -o /usr/local/bin/osu osu.c -lcap -lutil -lpam -lpam_misc
-```
-
-## Setup:
-After building the binary run:
-```
-sudo chmod 555 /usr/local/bin/osu
-sudo setcap "all=eip" /usr/local/bin/osu
+curl -sSL https://raw.githubusercontent.com/oddbyte/oSu/main/installer | sudo bash
 ```
 
 ## Usage:
@@ -55,4 +44,23 @@ Examples:
 
 osu version 1.0
 oSu author: Oddbyte (https://oddbyte.dev)
+```
+
+# Manual Installation:
+
+## Building:
+To build you will need to install libcap and libcap-dev:
+```
+sudo apt install libcap2 libcap2-bin libcap-dev libpam0g-dev -y
+```
+To build just run:
+```
+sudo gcc -o /usr/local/bin/osu osu.c -lcap -lutil -lpam -lpam_misc
+```
+
+## Setup:
+After building the binary run:
+```
+sudo chmod 555 /usr/local/bin/osu
+sudo setcap "all=eip" /usr/local/bin/osu
 ```
