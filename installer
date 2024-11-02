@@ -1,2 +1,44 @@
-# Installer for oSu
+#!/bin/bash
 
+# Check if the script is running as root
+if [ "$(id -u)" -ne 0 ]; then
+  echo "Please run this script as root."
+  exit 1
+fi
+
+# Define the URL of the file to download
+OSU_URL="https://raw.githubusercontent.com/oddbyte/oSu/refs/heads/main/oSu.c"
+OSU_FILE="oSu.c"
+OUTPUT_PATH="/usr/local/bin/osu"
+
+# Install necessary dependencies
+echo "Installing dependencies..."
+apt update
+apt install libcap2 libcap2-bin libcap-dev libpam0g-dev -y
+
+# Download oSu.c from the specified URL
+echo "Downloading oSu.c..."
+curl -o "$OSU_FILE" "$OSU_URL"
+if [ $? -ne 0 ]; then
+  echo "Failed to download $OSU_FILE from $OSU_URL"
+  exit 1
+fi
+
+# Compile the downloaded file with specified libraries
+echo "Compiling $OSU_FILE..."
+gcc -o "$OUTPUT_PATH" "$OSU_FILE" -lcap -lutil -lpam -lpam_misc
+if [ $? -ne 0 ]; then
+  echo "Compilation failed."
+  exit 1
+fi
+
+# Set permissions and capabilities
+echo "Setting permissions and capabilities..."
+chmod 555 "$OUTPUT_PATH"
+setcap "all=eip" "$OUTPUT_PATH"
+if [ $? -ne 0 ]; then
+  echo "Failed to set capabilities on $OUTPUT_PATH."
+  exit 1
+fi
+
+echo "Installation of osu completed successfully."
