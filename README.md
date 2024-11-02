@@ -9,6 +9,37 @@ To install run:
 curl -sSL https://raw.githubusercontent.com/oddbyte/oSu/main/installer | sudo bash
 ```
 In bash.
+Then, as root, run `osu` to make the config file at `/etc/osu.conf`
+
+## Config:
+```
+# oSu configuration file.
+
+PATH-SECURE = { /usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin } # PATH is automatically set to this upon running.
+
+# You can use UIDs and GIDs:
+user-[0] allow-caps all NOPASSWD
+group-[0] allow-caps all NOPASSWD
+# You can also use user / group names:
+# group-[wheel] allow-caps all
+# You can set specific capabilities to allow:
+# user-[oddbyte] allow-caps cap_dac_override,cap_chown
+# You can also deny certain ones:
+# group-[oddbyte] allow-caps all deny-caps cap_sys_admin,cap_bpf
+# The override specification should go like this, from most important (overrides lowers) to least important:
+
+# User Deny
+# Primary group deny
+# User Allow
+# Primary group allow
+# Supplemental group deny
+# Supplemental group allow
+
+# Example:
+# User oddbyte with group oddbyte and supplemental groups users and wheel runs osu
+# The config has user-[oddbyte] allow-caps cap_dac_override,cap_chown and group-[oddbyte] allow-caps all deny-caps cap_sys_admin,cap_bpf and group-[wheel] allow-caps all
+# This translates into: allow everything except cap_sys_admin,cap_bpf (group wheel allows all, but the primary group (oddbyte) is denying cap_sys_admin,cap_bpf)
+```
 
 ## Usage:
 ```
