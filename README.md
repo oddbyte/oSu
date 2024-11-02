@@ -4,10 +4,11 @@ Requires Linux Kernel 5.9 or above.
 Requires libcap to install.
 
 ## Installation:
-Run:
+To install run:
 ```
 curl -sSL https://raw.githubusercontent.com/oddbyte/oSu/main/installer | sudo bash
 ```
+In bash.
 
 ## Usage:
 ```
