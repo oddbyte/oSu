@@ -1,0 +1,24 @@
+name: Build oSu
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  install:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+
+      - name: Install osu
+        run: |
+          curl -sSL https://raw.githubusercontent.com/oddbyte/oSu/main/installer | sudo bash
+
+      - name: Upload osu binary
+        uses: actions/upload-artifact@v4.4.3
+        with:
+          name: osu-devbuild
+          path: /usr/local/bin/osu
