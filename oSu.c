@@ -29,7 +29,7 @@
 #define CYAN "\033[1;36m"
 #define RESET "\033[0m"
 
-#define VERSION "1.0"
+#define VERSION "1.1"
 #define AUTHOR "Oddbyte (https://oddbyte.dev)"
 
 const char *default_config = "\
@@ -188,6 +188,42 @@ void add_supp_group(gid_t **supp_gids, int *num_supp_gids, int *supp_gids_capaci
     (*supp_gids)[(*num_supp_gids)++] = new_gid;
 }
 
+void drop_all_caps() {
+    cap_t empty_caps = cap_init();
+    if (empty_caps == NULL) {
+        perror(RED "Failed to initialize empty capabilities" RESET);
+        exit(EXIT_FAILURE);
+    }
+
+    if (prctl(PR_SET_SECUREBITS, SECBIT_NO_CAP_AMBIENT_RAISE) == -1) {
+        perror(RED "Failed to disable ambient capability raising" RESET);
+        exit(EXIT_FAILURE);
+    }
+
+    for (int i = 0; i <= CAP_LAST_CAP; i++) {
+        if (prctl(PR_CAPBSET_DROP, i) == -1) {
+            perror(RED "Failed to drop capability from bounding set" RESET);
+            exit(EXIT_FAILURE);
+        }
+    }
+
+    if (cap_set_proc(empty_caps) == -1) {
+        perror(RED "Failed to drop all capabilities" RESET);
+        cap_free(empty_caps);
+        exit(EXIT_FAILURE);
+    }
+    cap_free(empty_caps);
+}
+
+void apply_secure_mode() {
+    drop_all_caps();
+
+    if (prctl(PR_SET_NO_NEW_PRIVS, 1, 0, 0, 0) == -1) {
+        perror(RED "Failed to set no-new-privs" RESET);
+        exit(EXIT_FAILURE);
+    }
+}
+
 int main(int argc, char *argv[]) {
     int color_enabled = 1; // Flag to enable/disable colors
 
@@ -227,8 +263,11 @@ int main(int argc, char *argv[]) {
         {"version", no_argument, 0, 'V'},
         {"debug", no_argument, 0, 5},
         {"no-color", no_argument, 0, 6},
+        {"drop", no_argument, 0, 7},
         {0, 0, 0, 0}
     };
+
+    int secure_mode = 0;
 
     int opt;
     int option_index = 0;
@@ -286,6 +325,9 @@ int main(int argc, char *argv[]) {
                 break;
             case 6:
                 color_enabled = 0;
+                break;
+            case 7:
+                secure_mode = 1;
                 break;
             default:
                 print_usage(color_enabled);
@@ -374,7 +416,6 @@ int main(int argc, char *argv[]) {
             exit(EXIT_FAILURE);
         }
     }
-
     if (show_capabilities) {
         apply_capabilities(&config, original_uid, original_gid, user_supp_gids, num_user_supp_gids);
         display_user_capabilities(&config, original_uid, original_gid, user_supp_gids, num_user_supp_gids);
@@ -553,6 +594,10 @@ int main(int argc, char *argv[]) {
         debug_capabilities("After setting UID and GID");
     }
 
+    if (secure_mode) {
+        apply_secure_mode();
+    }
+
     // Only set PATH to the secure path
     if (!preserve_path) {
         if (config.path_secure) {
@@ -564,7 +609,7 @@ int main(int argc, char *argv[]) {
     }
 
     // Apply capabilities based on the caller's UID and GIDs
-    apply_capabilities(&config, original_uid, original_gid, user_supp_gids, num_user_supp_gids);
+    if (!secure_mode) apply_capabilities(&config, original_uid, original_gid, user_supp_gids, num_user_supp_gids);
 
     if (debug_mode) {
         debug_capabilities("After applying capabilities based on configuration");
