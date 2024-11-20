@@ -48,7 +48,6 @@ Usage:
  osu [options]
 
 Options:
- -m, -p, --preserve-environment      do not reset environment variables (Path is reset unless --preserve-path is set)
  --preserve-path                     don't reset path to PATH-SECURE
  -w, --whitelist-environment <list>  don't reset specified variables (If Path is included in this, it is ignored. Use --preserve-path instead.)
 
@@ -56,7 +55,7 @@ Options:
  -g, --group <group>                 specify the primary group
  -G, --supp-group <group>            specify a supplemental group
 
- -l, --login                      make the shell a login shell
+ -l, --login                         make the shell a login shell
  --set-caps <list>                   only set the specified capabilities (only if you have access to them. Run osu --what-can-i-do to see all capabilities you are allowed to use.)
  -c, --command <command>             pass a command to the shell with -c
                                      please make sure to enclose any commands that require spaces in double quotes ("")
@@ -65,16 +64,18 @@ Options:
  -P, --pty                           create a new pseudo-terminal
 
  --debug                             display debug messages all steps of the way
+ --drop                              drop all privs and capabilities, and set no-new-privs
  -h, --help                          display this help
- --what-can-i-do                     display what capabilities you can
+ --what-can-i-do                     display what capabilities you can 
  -V, --version                       display version
 
 Examples:
  osu
  osu -c sh
+ osu --drop
  osu -u root -g 0 -G users,106 -c "echo \"hello\""
 
-osu version 1.0
+osu version 1.1
 oSu author: Oddbyte (https://oddbyte.dev)
 ```
 

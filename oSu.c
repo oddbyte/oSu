@@ -856,7 +856,7 @@ void print_usage(int color_enabled) {
         printf(GREEN " -g, --group <group>" RESET "                 specify the primary group\n");
         printf(GREEN " -G, --supp-group <group>" RESET "            specify a supplemental group\n");
         printf("\n");
-        printf(GREEN " -l, --login" RESET "                      make the shell a login shell\n");
+        printf(GREEN " -l, --login" RESET "                         make the shell a login shell\n");
         printf(GREEN " --set-caps <list>" RESET "                   only set the specified capabilities (only if you have access to them. Run osu --what-can-i-do to see all capabilities you are allowed to use.)\n");
         printf(GREEN " -c, --command <command>" RESET "             pass a command to the shell with -c\n");
         printf("                                     please make sure to enclose any commands that require spaces in double quotes (\"\")\n");
@@ -865,6 +865,7 @@ void print_usage(int color_enabled) {
         printf(GREEN " -P, --pty" RESET "                           create a new pseudo-terminal\n");
         printf("\n");
         printf(GREEN " --debug" RESET "                             display debug messages all steps of the way\n");
+        printf(GREEN " --drop" RESET "                              drop all privs and capabilities, and set no-new-privs\n");
         printf(GREEN " -h, --help" RESET "                          display this help\n");
         printf(GREEN " --what-can-i-do" RESET "                     display what capabilities you can \n");
         printf(GREEN " -V, --version" RESET "                       display version\n");
@@ -872,6 +873,7 @@ void print_usage(int color_enabled) {
         printf(MAGENTA "Examples:\n" RESET);
         printf(" osu\n");
         printf(" osu -c sh\n");
+        printf(" osu --drop\n");
         printf(" osu -u root -g 0 -G users,106 -c \"echo \\\"hello\\\"\"\n");
         printf("\n");
         printf("osu version %s\n", VERSION);
@@ -887,7 +889,7 @@ void print_usage(int color_enabled) {
         printf(" -g, --group <group>                 specify the primary group\n");
         printf(" -G, --supp-group <group>            specify a supplemental group\n");
         printf("\n");
-        printf(" -l, --login                      make the shell a login shell\n");
+        printf(" -l, --login                         make the shell a login shell\n");
         printf(" --set-caps <list>                   only set the specified capabilities (only if you have access to them. Run osu --what-can-i-do to see all capabilities you are allowed to use.)\n");
         printf(" -c, --command <command>             pass a command to the shell with -c\n");
         printf("                                     please make sure to enclose any commands that require spaces in double quotes (\"\")\n");
@@ -896,6 +898,7 @@ void print_usage(int color_enabled) {
         printf(" -P, --pty                           create a new pseudo-terminal\n");
         printf("\n");
         printf(" --debug                             display debug messages all steps of the way\n");
+        printf(" --drop                              drop all privs and capabilities, and set no-new-privs\n");
         printf(" -h, --help                          display this help\n");
         printf(" --what-can-i-do                     display what capabilities you can \n");
         printf(" -V, --version                       display version\n");
